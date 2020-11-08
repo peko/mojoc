@@ -1,0 +1,523 @@
+<!DOCTYPE html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Ailove.Lab | LoRa</title><link rel="stylesheet" href="/css/reset.css"><link rel="stylesheet" href="/css/reveal.css"><link rel="stylesheet" href="/css/theme/lab.css"><link rel="stylesheet" href="/fonts/RobotoSlab/stylesheet.css"><link rel="stylesheet" href="/fonts/Roboto/stylesheet.css"><link rel="stylesheet" href="/fonts/Yanone/stylesheet.css"><!-- Theme used for syntax highlighting of code--><link rel="stylesheet" href="/lib/css/monokai.css"><!-- Printing and PDF exports--><script>var link = document.createElement( 'link' );
+link.rel = 'stylesheet';
+link.type = 'text/css';
+link.href = window.location.search.match( /print-pdf/gi ) ? '/css/print/pdf.css' : '/css/print/paper.css';
+document.getElementsByTagName( 'head' )[0].appendChild( link );
+</script></head><div class="reveal"><div class="slides"><section><section><h1>ООC</h1></section><section><h3>Object Oriented C</h3><h4><a href="https://github.com/scottcgi/Mojoc">mojoc guide</a></h4></section></section><section><h2>Topics</h2><h4 class="fragment">Mojo code Style</h4><h4 class="fragment">Object Oriented C</h4></section><section><section><h1>Mojo code style</h1></section><section><h3>Basic Naming</h3><h4>The basic use <b>CamelCased</b></h4><ul><li>this is <b>BigCamelCased</b></li><li>this is <b>smallCamelCased</b>.</li></ul></section><section><h3>Variable Naming</h3><h4>The common variable use <b>smallCamelCased</b></h4><pre class="c"><code>int               keyLength;
+int               valueTypeSize;
+SkeletonBone*     bone;
+SkeletonBoneData* boneData;
+Drawable*         drawable;
+</code></pre></section><section><h4>The const use smallCamelCased</h4><pre class="c"><code>static const char*  ids[AudioId_Length];
+static const char*  saveDataFileName = "MojocSaveDataFile";
+static const int    bezierSize       = (BEZIER_SEGMENTS + 1) * 2 - 1;
+static const float  subDivPre        = subDivStep3 / pre5;
+</code></pre></section><section><h4>The bool variable (including member variables) begin with prefix <b>is</b>, then the whole is smallCamelCased</h4><pre class="c"><code>SLboolean isLoopEnabled;
+bool      isFound;
+bool      isRemoved;
+particle->isActive
+</code></pre></section><section><h4>The singleton variable begin with prefix A, then the whole is BigCamelCased</h4><pre class="c"><code>extern struct AComponent   AComponent  [1];
+extern struct ADrawable    ADrawable   [1];
+extern struct AParticle    AParticle   [1];
+extern struct AApplication AApplication[1];
+</code></pre></section><section><h4>The variable of function get out argument begin with prefix out, then the whole is smallCamelCased</h4><pre class="c"><code>void (*OnSaveData)(void**   outSaveData,   int*         outLength);
+void (*Inverse)   (Matrix4* matrix4,       Matrix4*     outInverse);
+void Init         (int      valueTypeSize, ArrayIntMap* outArrayIntMap);
+</code></pre></section><section><h4>The variable of function pointer use BigCamelCased</h4><pre class="c"><code>typedef struct
+{
+    void (*OnPause)  (void);
+    void (*OnResume) (void);
+    void (*OnDestroy)(void);
+}
+ApplicationCallbacks;
+</code></pre></section><section><pre class="c"><code>typedef float (*TweenActionValueOnGet)(void* target);
+typedef void  (*TweenActionValueOnSet)(void* target, float value);
+
+typedef struct
+{
+    TweenActionValueOnGet OnGet;
+    TweenActionValueOnSet OnSet;
+}
+TweenActionValueGetSet;
+</code></pre></section><section><h3>Abbreviated Naming</h3><h4>The abbreviated words use uppercase words or lowercase words</h4><pre class="c"><code>typedef struct { } RGB;
+
+RGB rgb;
+RGB myRGB;
+RGB rgbDatas[10];
+RGB myRGBData;
+
+void SetRGB    (RGB* rgb);
+void RGBSet    (RGB* rgb);
+void SetRGBData(RGB* rgb);
+</code></pre></section><section><h2>Goto Label Naming</h2></section><section><h4>The goto label tag use <b>BigCamelCased</b>. But goto label address use common variable rule</h4><pre class="c"><code>goto ParseArrayEnd;
+goto ParseObjectEnd;
+goto UseVBO;
+goto UseVAO;
+goto *coroutine->step;
+</code></pre></section><section><h2>Enum Naming</h2></section><section><h4>The enum use <b>BigCamelCased</b>, and must have prefix separated by <b>_</b></h4><pre class="c"><code>enum
+{
+    HeroState_Stand,
+    HeroState_DieOver,
+};
+
+enum
+{
+    CollisionGroup_HeroBody   = 1,
+    CollisionGroup_HeroAttack = 1 << 1,
+};
+
+</code></pre></section><section><h4>The typedef enum use <b>BigCamelCased</b>, and must have prefix separated by <b>_</b></h4><pre class="c"><code>typedef enum
+{
+    FontTextAlignment_HorizontalLeft,
+    FontTextAlignment_HorizontalRight,
+    FontTextAlignment_VerticalTop,
+    FontTextAlignment_VerticalBottom,
+}
+FontTextAlignment;
+</code></pre></section><section><pre class="c"><code>typedef enum
+{
+    InputTouchType_Up     = 1,
+    InputTouchType_Down   = 2,
+    InputTouchType_Move   = 3,
+    InputTouchType_Cancel = 4,
+}
+InputTouchType;
+</code></pre></section><section><h2>Function Naming</h2></section><section><h4>The global function and global inline function use <b>BigCamelCased</b>, and must have prefix separated by <b>_</b></h4><pre class="c"><code>extern void         Application_Main        (void);
+static inline void  AApplication_AppendChild(Component* child);
+static inline float AGLTool_ToGLWidth       (float      screenWidth);
+static inline float AMath_Random            (void);
+</code></pre></section><section><h4>The local function and local inline function use <b>BigCamelCased</b>;</h4><pre class="c"><code>static void         LoadingRun    (Coroutine* coroutine);
+static inline float GetWorldScaleY(Drawable*  drawable);
+</code></pre></section><section><h4>The typedef function use <b>BigCamelCased</b>, and must have prefix</h4><pre class="c"><code>typedef float (*TweenActionValueOnGet)(void*      target);
+typedef void  (*TweenActionValueOnSet)(void*      target, float value);
+typedef void  (*CoroutineRun)         (Coroutine* coroutine);
+</code></pre></section><section><h4>The function operation may not succeed, begin with prefix <b>Try</b>, then the whole is <b>BigCamelCased</b></h4><pre class="c"><code>void* (*TryPut)   (ArrayIntMap* arrayIntMap, intptr_t key, void* valuePtr);
+bool  (*TryRemove)(ArrayIntMap* arrayIntMap, intptr_t key);
+</code></pre></section><section><h4>The function return boolean which is operation purpose, begin with prefix <b>Is</b> or <b>Test</b> or <b>Check</b> , then the whole is <b>BigCamelCased</b></h4><pre class="c"><code>bool (*IsContains)         (ArrayIntSet*  arrayIntSet, intptr_t element);
+bool (*TestPolygonPoint)   (Array(float)* vertexArr,   float x, float y);
+bool ADrawable_CheckVisible(Drawable*     drawable);
+</code></pre></section><section><h4>The function begin with prefix <b>Release</b>, means free the struct members memory, after then the pointer needs to be freed manually</h4><pre class="c"><code>void (*Release)    (Mesh* mesh);
+void (*ReleaseQuad)(DrawAtlas* drawAtlas, SubMesh* subMesh);
+</code></pre></section><section><h4>The function begin with the prefix <b>Destroy</b>, means free the struct members and self memory, after then the pointer cannot be used</h4><pre class="c"><code>void (*Destroy)(void);
+void (*Destroy)(Texture* texture);
+</code></pre></section><section><h4>The function begin with prefix <b>Create</b>, means return the malloc pointer, so use <b>Release</b> and <b>free</b> or <b>Destroy</b> for delete</h4><pre class="c"><code>ArrayList* (*Create)            (int elementTypeSize);
+ArrayList* (*CreateWithSize)    (int elementTypeSize, int size);
+ArrayList* (*CreateWithCapacity)(int elementTypeSize, int capacity);
+</code></pre></section><section><h4>The function begin with prefix <b>Init</b>, means the pointer members memory on stack, so use <b>Release</b> or <b>Destroy</b> for delete memory</h4><pre class="c"><code>void (*Init)            (int elementTypeSize, ArrayList*               outArrayList);
+void (*InitWithSize)    (int elementTypeSize, int size,     ArrayList* outArrayList);
+void (*InitWithCapacity)(int elementTypeSize, int capacity, ArrayList* outArrayList);
+</code></pre></section><section><h4>The function if no args then type <b>void</b> arg</h4><pre class="c"><code>Drawable*          (*Create)      (void);
+int                (*GetDrawCalls)(void);
+struct ATweenTool* (*AddAction)   (void);
+</code></pre></section><section><h4>The function have suffix <b>Impl</b>, means the function must be implemented in <b>.c</b> file</h4><pre class="c"><code>extern void Application_MainImpl(void);
+
+struct ATweenActionValueGetSetImpl
+{
+    TweenActionValueGetSet moveX  [1];
+    TweenActionValueGetSet moveY  [1];
+
+    TweenActionValueGetSet scaleX [1];
+    TweenActionValueGetSet scaleY [1];
+
+    TweenActionValueGetSet rotateZ[1];
+    TweenActionValueGetSet fadeTo [1];
+};
+
+extern struct ATweenActionValueGetSetImpl ATweenActionValueGetSetImpl[1];
+</code></pre></section><section><h2>Struct Naming</h2><h4>The struct (union) or typedef struct (union), use <b>BigCamelCased</b></h4></section><section><h2>Macro Naming</h2></section><section><h4>The head define macro, use <b>uppercase</b> words separated by <b>_</b> and have suffix <b>H</b></h4><pre class="c"><code>#ifndef STYLE_GUIDE_H
+#define STYLE_GUIDE_H
+</code></pre></section><section><h4>The macro without parameters, use <b>uppercase</b> words separated by <b>_</b></h4><pre class="c"><code>#define MATH_PI  3.141592653589793
+#define MATH_2PI 6.283185307179586
+#define MATH_PI2 1.570796326794897
+</code></pre></section><section><h4>The macro with parameters, use <b>BigCamelCased</b>, and must have prefix separated by <b>_</b></h4><pre class="c"><code>#define AMath_Min(x, y) 
+#define AStruct_GetParent2(memberPtr, structType)
+#define ACoroutine_YieldFrames(waitFrames)
+</code></pre></section><section><h4>The local macro in <b>.c</b> file, use <b>BigCamelCased</b>, no prefix required, and must <b>#undef</b> in same <b>.c</b> file</h4><pre class="c"><code>#define CheckIndex(tag, index)
+#define CheckCallback(callback)
+#define CheckFingerId(tag, fingerId)
+
+#undef CheckIndex
+#undef CheckCallback
+#undef CheckFingerId
+</code></pre></section><section><h4>The macro type parameter must have suffix <b>Type</b></h4><pre class="c"><code>#define ArrayList(ElementType)
+#define AArrayIntSet_Init(ElementType, increase)
+#define AArrayList_Pop(arrayList, ElementType)
+</code></pre></section><section><h2>Array Naming</h2></section><section><h4>Array as parameter, use <b>[</b>] form, not <b>*</b> form</h4><pre class="c"><code>void (*SetTimeToBuff)(char        buff  [], int seconds);
+int  (*BinarySearch) (const float values[], int valuesLength, float target);
+</code></pre></section><section><h4>Array as parameter, use <b>[length</b>] form, if the length is clear</h4><pre class="c"><code>void (*GetLanguageCode)(char outLanguageCode[2]);
+</code></pre></section><section><h4>Array variable use <b>[length</b>] form, if the length is clear</h4><pre class="c"><code>extern struct AMesh AMesh[1];
+  
+struct AGLInfo
+{
+    GLfloat pointSizeRange[2];
+    GLfloat lineWidthRange[2];
+}
+
+ArrayIntSet set[1] = AArrayIntSet_Init(ElementType, increase);
+</code></pre></section><section><h4>Array composite literal use <b>[length</b>] form, if the length is clear</h4><pre class="c"><code>#define AColor_Make(r, g, b, a) (Color[1])   {{r, g, b, a }}
+#define AMatrix_Make(...)       (Matrix4[1]) {{__VA_ARGS__}}
+InitSprite(outSprite, texture, (Array(Quad)[1]) {quad, 1}); 
+</code></pre></section><section><h2>Others Naming</h2></section><section><h4>The following cases use <b>BigCamelCased</b></h4><ul><li>File Name</li><li>Folder Name</li><li>Resource Name</li></ul></section><section><h2>Basic Format</h2></section><section><h4>Use <b>4 spaces</b> key indent, not <b>tab</b> key</h4><h4>One line <b>120 chars</b></h4><h4>The pointer <b>*</b> on type name side</h4><pre class="c"><code>int*  p1;
+int** p2 = &p1;
+void* Function(char* str);
+</code></pre><h4>In code block try <b>vertical</b> alignment</h4><pre class="c"><code>See all the examples above.
+</code></pre></section><section><h2>Space Format</h2><h4>The operator at least <b>one space</b> on both sides</h4><pre class="c"><code>vertexX + (y - vertexY) / (preY - vertexY) * (preX - vertexX)
+</code></pre></section><section><h4>The <b>if, while, for, switch</b>, must have <b>{}</b>, and <b>one space</b> with <b>()</b></h4><pre class="c"><code>if (...)
+{
+}
+
+
+while (...)
+{
+}
+
+
+for (...)
+{
+}
+
+
+switch (...)
+{
+}
+
+</code></pre></section><section><h2>Indent Format</h2><h4>The case <b>4 spaces</b> indent, and the break <b>4 spaces</b> indent in switch case</h4><pre class="c"><code>switch (...)
+{
+    case 0:
+        break;
+
+    case 1:
+    {
+        break;
+    }
+}
+
+</code></pre></section><section><h4>The goto label indent with the current line</h4><pre class="c"><code>static void Function()
+{ 
+     goto Label:
+
+     Label1:
+     int a;
+
+     Label2:
+     int b;
+
+     Label3:
+     int c;
+}
+</code></pre></section><section><h4>The conditional compile, indent with the current line</h4><pre class="c"><code>typedef struct
+{
+     Sprite       sprite[1];
+     PhysicsBody* body;
+     Enemy*       enemy;
+     ArrowHitType hitType;
+
+     #ifdef APP_DEBUG
+     Drawable     debugDrawable[1];
+     #endif
+}
+Arrow;
+
+void Function()
+{
+    int a;
+      
+    #ifdef APP_DEBUG
+    int b;
+    #endif
+}
+
+#ifdef APP_DEBUG
+Drawable debugDrawable[1];
+#endif
+
+</code></pre></section><section><h2>Parentheses Format</h2><h4>The <b>{}</b> and <b>{{}}</b> vertical alignment or on the same line</h4><pre class="c"><code>{
+  ...
+}  // vertical alignment
+
+  
+{{
+  ...
+}} // vertical alignment 
+
+
+{...} // same line
+
+
+{{...}} // same line
+</code></pre></section><section><h4>The <b>{{}}</b> used for array init</h4><pre class="c"><code>struct AGameMap AGameMap[1] =
+{{
+    .Init      = Init,
+    .Run       = Run,
+    .RandomMap = RandomMap,
+}};
+
+Vector3 vector[1] =
+{{
+    drawable->modelMatrix->m0,
+    drawable->modelMatrix->m1,
+    drawable->modelMatrix->m2,
+}};
+
+#define AMatrix_Make(...) (Matrix4[1]) {{__VA_ARGS__}}
+</code></pre></section><section><h4>The <b>()</b> if need to wrap, then vertical alignment</h4><pre class="c"><code>AMath_Max
+(
+    animationData->duration,
+    AArray_Get
+    (
+        deformTimeline->frameArr,
+        deformTimeline->frameArr->length - 1,
+        float
+    )
+);
+
+static void ReadAnimationDeform
+(
+    SkeletonData*          skeletonData,
+    JsonObject*            jsonDeform,
+    SkeletonAnimationData* animationData,
+    ArrayList*             skeletonTimelineArr
+)
+{
+}
+</code></pre></section><section><h2>Lines Format</h2></section><section><h4>Empty <b>two lines</b> around functions</h4><pre class="c"><code>static int a = 100;
+
+static void Function1()
+{
+}
+
+static inline void Function2()
+{
+}
+
+struct A
+{
+}
+</code></pre></section><section><h4>Empty <b>two lines</b> between different contents</h4><pre class="c"><code>#include "AAA.h"
+#include "BBB.h"
+
+typedef float (*Function1)(void* target);
+typedef float (*Function2)();
+
+struct A
+{
+}
+
+struct B
+{
+}
+
+extern struct B B[1];
+</code></pre></section><section><h2>Code Comment</h2></section><section><h4>Outside function body use <b>/***/</b></h4><pre class="c"><code>/**
+ * Comment struct
+ */  
+struct A
+{   
+    /**
+     * Comment property
+     */ 
+    int a;
+    
+    /**
+     * Comment function
+     */
+    void (*Function)();
+}
+</code></pre></section><section><h4>In function body use <b>//</b></h4><pre class="c"><code>void Function()
+{
+  // comment in function body.
+} 
+</code></pre></section><section><h4>Comment block or multiline code</h4><pre class="c"><code>/* This is means comment block or multiline code. */
+
+/* 
+This is means comment block or multiline code. 
+*/
+</code></pre></section><section><h4>Use comment line to separate different logical related contents</h4><pre class="c"><code>void Function1();
+
+//--------------------
+
+void Function2();
+
+void Function3()
+{
+    int a;
+
+    //---------------- 
+
+    int b;
+}
+</code></pre></section><section><h4>Use comment line to mark macros <b>#ifdef Platform_X</b> or multiple <b>#endif</b></h4><pre class="c"><code>#ifndef PLATFORM_H
+#define PLATFORM_H
+
+//------------------------
+#ifdef IS_PLATFORM_ANDROID
+//------------------------
+
+// platform codes.
+
+//---------------------------
+#endif // IS_PLATFORM_ANDROID
+//---------------------------
+
+//------------------
+#endif // PLATFORM_H
+//------------------
+</code></pre></section><section><h2>Other Rules</h2></section><section><h4>The parameter macro, used only when <b>inline</b> function not working</h4><h4>such as shortcut parameters of function call.<pre class="c"><code>/**
+ * Shortcut of AArrayList->GetAdd.
+ * return element.
+ */
+ #define AArrayList_GetAdd(arrayList, ElementType) \ 
+ (*(ElementType*) AArrayList->GetAdd(arrayList))
+</code></pre></h4></section><section> <h4>such as macro specific functionality.<pre class="c"><code>#define CheckIndex(tag, index)                                      \
+ALog_A                                                              \
+(                                                                   \
+    ((index) < arrayList->size && (index) >= 0),                    \
+    "AArrayList " tag " failed index error, index = %d, size = %d", \
+    index,                                                          \
+    arrayList->size                                                 \
+)     
+</code></pre></h4></section><section><h4>such as generic parameter.<pre class="c"><code>/**
+ * Marked ArrayList element type.
+ * ElementType: element data type
+ */
+#define ArrayList(ElementType) ArrayList
+</code></pre></h4></section><section><h4>such as varargs.<pre class="c"><code>#define ALog_A(e, ...) e ? (void) 0 : ALog_E(__VA_ARGS__),  assert(e);
+</code></pre></h4></section><section><h4>Do not use number as <b>boolean</b> value</h4><h4>The <b>coefficient</b> number uses <b>int</b> unless it is a <b>float</b></h4><pre class="c"><code>float f1 = sprite->width / 2;
+float f2 = sprite->width / 2.5f;
+</code></pre></section><section><h4>Use <b>++i</b> whenever possible</h4><pre class="c"><code>for (int i = 0; i < 10; ++i)
+{
+}
+</code></pre></section><section>      <h4>Assignment appears in the <b>if</b> or <b>while</b> statement, adding brackets</h4><pre class="c"><code>int intVal;
+if ((intVal = GetInt())) 
+{
+    int tmp = intVal * 100;
+}
+
+int intVal1;
+int intVal2 = GetInt();
+while ((intVal1 = intVal2))
+{
+    int tmp = intVal1 * 100;
+}
+</code></pre></section><section><h4>The <b>const</b> variable cannot be modified</h4><h4>Use <b>enum</b> instead of macro <b>#define</b> whenever possible</h4><h4>Use a monospaced font</h4></section></section><section><section><h1>Object Oriented C</h1></section><section><h2>Singleton</h2></section><section><h4>The Singleton pattern is very important to Mojoc.</h4><h4>In C language the data and behavior are separated and there is no namespace.</h4><h4>The singleton can abstract a group of behavior and give it namespace.</h4><h4>This model build a parallel data struct and behavior struct that correspond to the class of OOP model.</h4></section><section><h4>In <b>.h</b> file</h4><pre class="c"><code>struct ADrawable {
+    Drawable* (*Create)();
+    void      (*Init)  (Drawable* outDrawable);
+};
+
+extern struct ADrawable ADrawable[1];
+</code></pre></section><section><ul>        <li>The <b>ADrawable</b> is singleton, global unique.</li><li>The struct <b>ADrawable</b> is type name, <b>ADrawable</b>[1] is object name.</li><li>The <b>ADrawable</b> object defined as an array, can let it use like a ptr.</li></ul></section><section> <h4>In <b>.c</b> file</h4><pre class="c"><code>static Drawable* Create() {
+    return (Drawable*) malloc(sizeof(Drawable));
+}
+  
+static void Init(Drawable* outDrawable) {
+    // init outDrawable
+}
+
+struct ADrawable ADrawable[1] = {
+    Create,
+    Init,
+};
+</code></pre><h4>Just initialize the singleton <b>ADrawable</b> object.</h4></section><section><h2>Encapsulation</h2><h4>In <b>.h</b> file</h4><pre class="c"><code>typedef struct Drawable Drawable;
+struct  Drawable {
+    float positionX;
+    float positionY;
+};
+
+typedef struct {
+    Drawable* (*Create)();
+    void      (*Init)  (Drawable* outDrawable);
+}
+ADrawable;
+
+extern ADrawable ADrawable[1];
+</code></pre></section><section><ul>     <li>The <b>Drawable</b> object hold the data.</li><li>The <b>ADrawable</b> object hold the behavior.</li><li>The <b>Create</b> function malloc the <b>Drawable</b> memory like new keyword.</li><li>The Init function initialize <b>Drawable</b> which memory already exists, often in stack or in superclass memory.</li></ul></section><section><h2>Inheritance</h2></section><section><h4>The inheritance is superclass struct all datas are embedded in subclass struct.</h4><h4>Then one malloc can get all memory in inheritance chain, and one free on subclass object can release all memory in inheritance chain.</h4></section><section><pre class="c"><code>typedef struct Drawable Drawable;
+struct  Drawable {
+    int a;
+};
+  
+typedef struct {
+    Drawable drawable[1];
+}
+Sprite;
+
+struct ASprite {
+    Sprite* (*Create)();
+    void    (*Init)  (Sprite* outSprite);
+};
+</code></pre></section><section>        <ul> <li>The <b>Drawable</b> is superclass.</li><li>The <b>Sprite</b> is subclass.</li><li>The <b>drawable[1</b>] as an array, can let it use like a ptr.</li><li>In <b>ASprite</b> function <b>Create</b> and <b>Init</b>, indirect call <b>ADrawable->Init</b> for initialize superclass memory.</li><li>In C there is no limit of inheritance number, the subclass can inheritance any numbers of superclass — this is a new angle of abstract.</li></ul></section><section><h4>How to visit subclass from superclass ?</h4><pre class="c"><code>/**
+ * Get struct pointer from member pointer.
+ * this for memberPtr same as memberName.
+ *
+ * memberPtr: the pointer that point struct's member.
+ *            it's the member address offset from struct address.
+ *
+ */
+#define AStruct_GetParent(memberPtr, ParentType) \
+    ((ParentType*) ((char*) (memberPtr) - offsetof(ParentType, memberPtr)))
+
+Sprite* sprite = AStruct_GetParent(drawable, Sprite);</code></pre></section><section><ul><li>First, get the superclass offset in subclass struct.</li><li>Second, get the subclass ptr from superclass ptr by superclass offset.</li><li>With this ability, we can hold superclass ptr execute same interface, but different implementation of subclass — this is polymorphism.</li></ul></section><section><h2>Composite</h2><h4>The composite is independent struct ptr are embedded in struct .</h4><pre class="c"><code>typedef struct Drawable Drawable;
+struct  Drawable {
+    Drawable* parent;
+};
+  </code></pre><h4>The parent composite into <b>Drawable</b>, the memory manage by independent <b>Create</b> and <b>Release</b> of parent.</h4></section><section><h2>Polymorphism</h2><pre class="c"><code>typedef struct Drawable Drawable;
+struct  Drawable {
+    void (*Draw)(Drawable* drawable);
+};
+</code></pre></section><section><h4>The function <b>Draw</b> in struct, means different <b>Drawable</b> object can has own implementation of <b>Draw</b>. </h4><pre class="c"><code>typedef struct {
+    Drawable drawable[1];
+}
+Hero;
+
+typedef struct {
+    Drawable drawable[1];
+}
+Enemy;
+
+Drawable drawables[] = {
+    hero->drawable,
+    enemy->drawable,
+};
+
+for (int i = 0; i < 2; ++i) {
+    Drawable* drawable = drawables[i];
+    drawable->Draw(drawable);
+}
+  </code></pre><h4>The <b>Hero</b> and <b>Enemy</b> implement own <b>Draw</b> behavior.</h4></section><section><h2>Override</h2></section><section><h4>In inheritance chain, usually need to override superclass function and call superclass function.</h4><pre class="c"><code>typedef struct {
+    Drawable drawable[1];
+}
+Sprite;
+
+struct ASprite {
+    void (*Draw)(Drawable* drawable);
+};
+
+extern ASprite ASprite;
+</code></pre></section><section> <h4>If we want to override Sprite's <b>Draw</b> function:</h4><ul><li>First, need to publish <b>Draw</b> to <b>ASprite</b>;</li><li>Second, override <b>Draw</b> function; </li><li>Then, we can still call the original <b>Draw</b> by <b>ASprite</b>.</li></ul></section><section><pre class="c"><code>typedef struct {
+    Sprite sprite[1];
+}
+SpriteBatch;
+
+// subclass implementation
+static void SpriteBatchDraw(Drawable* drawable) {
+      // call father
+      ASprite->Draw(drawable);
+
+      // do extra things...
+}
+
+// override
+spriteBatch->sprite->drawable->Draw = SpriteBatchDraw;
+
+</code></pre></section><section><h2>Memory</h2></section><section><ul><li><b>Create</b> — malloc struct memory and delete by <b>free</b> and <b>Release</b> if needed.</li><li><b>Init</b> — initialize struct memory and delete by <b>Release</b> if needed.</li><li><b>Release</b> — delete struct member ptr memory which composite into struct and <b>Create</b> by struct self.</li><li><b>Destroy</b> — first <b>Release</b> then <b>free</b>.</li></ul></section><section><h2>Examples</h2><ul><li><a href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Graphics/Draw/Drawable.h">Drawable.h</a></li><li><a href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Graphics/Draw/Drawable.c">Drawable.c</a></li><li><a href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Graphics/OpenGL/Sprite.h">Sprite.h</a></li><li><a href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Graphics/OpenGL/Sprite.c">Sprite.c</a></li><li><a href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Toolkit/HeaderUtils/Struct.h">Struct.h</a></li></ul></section></section><section><section><h1>The End</h1></section></section></div></div><script src="/js/reveal.js"></script><script>// More info about config & dependencies:
+// - https://github.com/hakimel/reveal.js#configuration
+// - https://github.com/hakimel/reveal.js#dependencies
+Reveal.initialize({
+dependencies: [
+    { src: '/plugin/markdown/marked.js' },
+    { src: '/plugin/markdown/markdown.js' },
+    { src: '/plugin/math/math.js', async: true },
+    { src: '/plugin/notes/notes.js', async: true },
+    { src: '/plugin/highlight/highlight.js', async: true }
+],
+history: true,
+});</script>

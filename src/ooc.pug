@@ -1,0 +1,233 @@
+section
+
+  section
+    h1 Object Oriented C
+
+  section
+    h2 Singleton
+  section
+    h4 The Singleton pattern is very important to Mojoc.
+    h4 In C language the data and behavior are separated and there is no namespace.
+    h4 The singleton can abstract a group of behavior and give it namespace.
+    h4 This model build a parallel data struct and behavior struct that correspond to the class of OOP model.
+  section
+    h4 In #[b .h] file
+    +code_c.
+      struct ADrawable {
+          Drawable* (*Create)();
+          void      (*Init)  (Drawable* outDrawable);
+      };
+ 
+      extern struct ADrawable ADrawable[1];
+
+  section
+    ul         
+      li The #[b ADrawable] is singleton, global unique.
+      li The struct #[b ADrawable] is type name, #[b ADrawable][1] is object name.
+      li The #[b ADrawable] object defined as an array, can let it use like a ptr.
+        
+  section 
+    h4 In #[b .c] file
+    +code_c.
+      
+      static Drawable* Create() {
+          return (Drawable*) malloc(sizeof(Drawable));
+      }
+        
+      static void Init(Drawable* outDrawable) {
+          // init outDrawable
+      }
+
+      struct ADrawable ADrawable[1] = {
+          Create,
+          Init,
+      };
+      
+    h4 Just initialize the singleton #[b ADrawable] object.
+
+
+  section
+    h2 Encapsulation
+    h4 In #[b .h] file
+    +code_c.
+      
+      typedef struct Drawable Drawable;
+      struct  Drawable {
+          float positionX;
+          float positionY;
+      };
+
+      typedef struct {
+          Drawable* (*Create)();
+          void      (*Init)  (Drawable* outDrawable);
+      }
+      ADrawable;
+
+      extern ADrawable ADrawable[1];
+
+  section
+    ul      
+      li The #[b Drawable] object hold the data.
+      li The #[b ADrawable] object hold the behavior.
+      li The #[b Create] function malloc the #[b Drawable] memory like new keyword.
+      li The Init function initialize #[b Drawable] which memory already exists, often in stack or in superclass memory.
+
+  section
+    h2 Inheritance
+
+  section
+    h4 The inheritance is superclass struct all datas are embedded in subclass struct.
+    h4 Then one malloc can get all memory in inheritance chain, and one free on subclass object can release all memory in inheritance chain.
+
+  section
+    +code_c.
+      typedef struct Drawable Drawable;
+      struct  Drawable {
+          int a;
+      };
+        
+      typedef struct {
+          Drawable drawable[1];
+      }
+      Sprite;
+
+      struct ASprite {
+          Sprite* (*Create)();
+          void    (*Init)  (Sprite* outSprite);
+      };
+
+  section         
+    ul 
+      li The #[b Drawable] is superclass.
+      li The #[b Sprite] is subclass.
+      li The #[b drawable[1]] as an array, can let it use like a ptr.
+      li In #[b ASprite] function #[b Create] and #[b Init], indirect call #[b ADrawable->Init] for initialize superclass memory.
+      li In C there is no limit of inheritance number, the subclass can inheritance any numbers of superclass — this is a new angle of abstract.
+
+  section
+    h4 How to visit subclass from superclass ?
+    +code_c.
+      
+      /**
+       * Get struct pointer from member pointer.
+       * this for memberPtr same as memberName.
+       *
+       * memberPtr: the pointer that point struct's member.
+       *            it's the member address offset from struct address.
+       *
+       */
+      #define AStruct_GetParent(memberPtr, ParentType) \
+          ((ParentType*) ((char*) (memberPtr) - offsetof(ParentType, memberPtr)))
+
+      Sprite* sprite = AStruct_GetParent(drawable, Sprite);
+  section
+    ul
+      li First, get the superclass offset in subclass struct.
+      li Second, get the subclass ptr from superclass ptr by superclass offset.
+      li With this ability, we can hold superclass ptr execute same interface, but different implementation of subclass — this is polymorphism.
+
+  section
+    h2 Composite
+    h4 The composite is independent struct ptr are embedded in struct .
+    +code_c.
+      typedef struct Drawable Drawable;
+      struct  Drawable {
+          Drawable* parent;
+      };
+        
+    h4 The parent composite into #[b Drawable], the memory manage by independent #[b Create] and #[b Release] of parent.
+
+  section
+    h2 Polymorphism
+    +code_c.
+      typedef struct Drawable Drawable;
+      struct  Drawable {
+          void (*Draw)(Drawable* drawable);
+      };
+      
+  section
+    h4 The function #[b Draw] in struct, means different #[b Drawable] object can has own implementation of #[b Draw]. 
+    +code_c.
+      typedef struct {
+          Drawable drawable[1];
+      }
+      Hero;
+
+      typedef struct {
+          Drawable drawable[1];
+      }
+      Enemy;
+
+      Drawable drawables[] = {
+          hero->drawable,
+          enemy->drawable,
+      };
+
+      for (int i = 0; i < 2; ++i) {
+          Drawable* drawable = drawables[i];
+          drawable->Draw(drawable);
+      }
+        
+    h4 The #[b Hero] and #[b Enemy] implement own #[b Draw] behavior.
+
+  section
+    h2 Override
+  section
+    h4 In inheritance chain, usually need to override superclass function and call superclass function.
+    +code_c.
+      typedef struct {
+          Drawable drawable[1];
+      }
+      Sprite;
+  
+      struct ASprite {
+          void (*Draw)(Drawable* drawable);
+      };
+  
+      extern ASprite ASprite;
+      
+  section 
+    h4 If we want to override Sprite's #[b Draw] function:
+    ul
+      li First, need to publish #[b Draw] to #[b ASprite];
+      li Second, override #[b Draw] function; 
+      li Then, we can still call the original #[b Draw] by #[b ASprite].
+
+  section
+    +code_c.
+      
+      typedef struct {
+          Sprite sprite[1];
+      }
+      SpriteBatch;
+  
+      // subclass implementation
+      static void SpriteBatchDraw(Drawable* drawable) {
+            // call father
+            ASprite->Draw(drawable);
+  
+            // do extra things...
+      }
+  
+      // override
+      spriteBatch->sprite->drawable->Draw = SpriteBatchDraw;
+      
+
+  section
+    h2 Memory
+  section
+    ul
+      li #[b Create] — malloc struct memory and delete by #[b free] and #[b Release] if needed.
+      li #[b Init] — initialize struct memory and delete by #[b Release] if needed.
+      li #[b Release] — delete struct member ptr memory which composite into struct and #[b Create] by struct self.
+      li #[b Destroy] — first #[b Release] then #[b free].
+
+  section
+    h2 Examples
+    ul
+     li: a(href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Graphics/Draw/Drawable.h"    ) Drawable.h
+     li: a(href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Graphics/Draw/Drawable.c"    ) Drawable.c
+     li: a(href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Graphics/OpenGL/Sprite.h"    ) Sprite.h
+     li: a(href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Graphics/OpenGL/Sprite.c"    ) Sprite.c
+     li: a(href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Toolkit/HeaderUtils/Struct.h") Struct.h
+

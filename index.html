@@ -1,7 +1,7 @@
-<!DOCTYPE html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Ailove.Lab | LoRa</title><link rel="stylesheet" href="/css/reset.css"><link rel="stylesheet" href="/css/reveal.css"><link rel="stylesheet" href="/css/theme/lab.css"><link rel="stylesheet" href="/fonts/RobotoSlab/stylesheet.css"><link rel="stylesheet" href="/fonts/Roboto/stylesheet.css"><link rel="stylesheet" href="/fonts/Yanone/stylesheet.css"><!-- Theme used for syntax highlighting of code--><link rel="stylesheet" href="/lib/css/monokai.css"><!-- Printing and PDF exports--><script>var link = document.createElement( 'link' );
+<!DOCTYPE html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Ailove.Lab | LoRa</title><link rel="stylesheet" href="css/reset.css"><link rel="stylesheet" href="css/reveal.css"><link rel="stylesheet" href="css/theme/lab.css"><link rel="stylesheet" href="fonts/RobotoSlab/stylesheet.css"><link rel="stylesheet" href="fonts/Roboto/stylesheet.css"><link rel="stylesheet" href="fonts/Yanone/stylesheet.css"><!-- Theme used for syntax highlighting of code--><link rel="stylesheet" href="lib/css/monokai.css"><!-- Printing and PDF exports--><script>var link = document.createElement( 'link' );
 link.rel = 'stylesheet';
 link.type = 'text/css';
-link.href = window.location.search.match( /print-pdf/gi ) ? '/css/print/pdf.css' : '/css/print/paper.css';
+link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
 document.getElementsByTagName( 'head' )[0].appendChild( link );
 </script></head><div class="reveal"><div class="slides"><section><section><h1>ООC</h1></section><section><h3>Object Oriented C</h3><h4><a href="https://github.com/scottcgi/Mojoc">mojoc guide</a></h4></section></section><section><h2>Topics</h2><h4 class="fragment">Mojo code Style</h4><h4 class="fragment">Object Oriented C</h4></section><section><section><h1>Mojo code style</h1></section><section><h3>Basic Naming</h3><h4>The basic use <b>CamelCased</b></h4><ul><li>this is <b>BigCamelCased</b></li><li>this is <b>smallCamelCased</b>.</li></ul></section><section><h3>Variable Naming</h3><h4>The common variable use <b>smallCamelCased</b></h4><pre class="c"><code>int               keyLength;
 int               valueTypeSize;
@@ -508,16 +508,16 @@ static void SpriteBatchDraw(Drawable* drawable) {
 // override
 spriteBatch->sprite->drawable->Draw = SpriteBatchDraw;
 
-</code></pre></section><section><h2>Memory</h2></section><section><ul><li><b>Create</b> — malloc struct memory and delete by <b>free</b> and <b>Release</b> if needed.</li><li><b>Init</b> — initialize struct memory and delete by <b>Release</b> if needed.</li><li><b>Release</b> — delete struct member ptr memory which composite into struct and <b>Create</b> by struct self.</li><li><b>Destroy</b> — first <b>Release</b> then <b>free</b>.</li></ul></section><section><h2>Examples</h2><ul><li><a href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Graphics/Draw/Drawable.h">Drawable.h</a></li><li><a href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Graphics/Draw/Drawable.c">Drawable.c</a></li><li><a href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Graphics/OpenGL/Sprite.h">Sprite.h</a></li><li><a href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Graphics/OpenGL/Sprite.c">Sprite.c</a></li><li><a href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Toolkit/HeaderUtils/Struct.h">Struct.h</a></li></ul></section></section><section><section><h1>The End</h1></section></section></div></div><script src="/js/reveal.js"></script><script>// More info about config & dependencies:
+</code></pre></section><section><h2>Memory</h2></section><section><ul><li><b>Create</b> — malloc struct memory and delete by <b>free</b> and <b>Release</b> if needed.</li><li><b>Init</b> — initialize struct memory and delete by <b>Release</b> if needed.</li><li><b>Release</b> — delete struct member ptr memory which composite into struct and <b>Create</b> by struct self.</li><li><b>Destroy</b> — first <b>Release</b> then <b>free</b>.</li></ul></section><section><h2>Examples</h2><ul><li><a href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Graphics/Draw/Drawable.h">Drawable.h</a></li><li><a href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Graphics/Draw/Drawable.c">Drawable.c</a></li><li><a href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Graphics/OpenGL/Sprite.h">Sprite.h</a></li><li><a href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Graphics/OpenGL/Sprite.c">Sprite.c</a></li><li><a href="https://github.com/scottcgi/Mojoc/blob/master/Engine/Toolkit/HeaderUtils/Struct.h">Struct.h</a></li></ul></section></section><section><section><h1>The End</h1></section></section></div></div><script src="js/reveal.js"></script><script>// More info about config & dependencies:
 // - https://github.com/hakimel/reveal.js#configuration
 // - https://github.com/hakimel/reveal.js#dependencies
 Reveal.initialize({
 dependencies: [
-    { src: '/plugin/markdown/marked.js' },
-    { src: '/plugin/markdown/markdown.js' },
-    { src: '/plugin/math/math.js', async: true },
-    { src: '/plugin/notes/notes.js', async: true },
-    { src: '/plugin/highlight/highlight.js', async: true }
+    { src: 'plugin/markdown/marked.js' },
+    { src: 'plugin/markdown/markdown.js' },
+    { src: 'plugin/math/math.js', async: true },
+    { src: 'plugin/notes/notes.js', async: true },
+    { src: 'plugin/highlight/highlight.js', async: true }
 ],
 history: true,
 });</script>
